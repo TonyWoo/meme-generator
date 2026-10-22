@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="{{LANG_ATTR}}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>{{META_TITLE}}</title>
+<meta name="description" content="{{META_DESC}}">
+<link rel="canonical" href="{{CANONICAL}}">
+{{HREFLANG_LINKS}}
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Meme Generator">
+<meta property="og:locale" content="{{OG_LOCALE}}">
+<meta property="og:title" content="{{META_TITLE}}">
+<meta property="og:description" content="{{META_DESC}}">
+<meta property="og:url" content="{{CANONICAL}}">
+<meta property="og:image" content="{{BASE_URL}}assets/templates/this-is-fine.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0f1220">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>😂</text></svg>">
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="./" aria-label="Meme Generator">
+    <span class="brand-emoji" aria-hidden="true">😂</span>
+    <span class="brand-name">Meme Generator</span>
+  </a>
+  <label class="lang-picker">
+    <span class="visually-hidden">Language</span>
+    <select id="langSelect" aria-label="Language">
+{{LANG_OPTIONS}}
+    </select>
+  </label>
+</header>
+
+<main class="layout">
+  <section class="stage-col">
+    <div class="stage" id="stage">
+      <canvas id="canvas" width="880" height="880"></canvas>
+      <div class="stage-loading" id="stageLoading">…</div>
+    </div>
+    <p class="hint">{{T:hint}}</p>
+    <div class="download-row">
+      <button type="button" class="btn btn-primary" id="btnPng">{{T:downloadPng}}</button>
+      <button type="button" class="btn" id="btnJpg">{{T:downloadJpg}}</button>
+    </div>
+  </section>
+
+  <aside class="panel">
+    <section class="card">
+      <h2>{{T:templates}}</h2>
+      <div class="source-row">
+        <label class="btn btn-accent file-btn">
+          {{T:upload}}
+          <input type="file" id="fileInput" accept="image/*" hidden>
+        </label>
+        <div class="blank-box">
+          <select id="blankSize" aria-label="{{T:blank}}">
+            <option value="1080x1080">1:1 · 1080×1080</option>
+            <option value="1080x1350">4:5 · 1080×1350</option>
+            <option value="1920x1080">16:9 · 1920×1080</option>
+            <option value="1080x1920">9:16 · 1080×1920</option>
+          </select>
+          <button type="button" class="btn" id="btnBlank">{{T:blank}}</button>
+        </div>
+      </div>
+      <div class="tpl-strip" id="tplStrip" role="listbox" aria-label="{{T:templates}}"></div>
+    </section>
+
+    <section class="card" id="textCard">
+      <h2>{{T:text}}</h2>
+      <button type="button" class="btn btn-accent btn-block" id="btnAddText">＋ {{T:addText}}</button>
+      <div class="field">
+        <label for="textInput">{{T:text}}</label>
+        <textarea id="textInput" rows="2"></textarea>
+      </div>
+      <div class="field">
+        <label for="fontSelect">{{T:font}}</label>
+        <select id="fontSelect">
+          <option value="pressuru">Pressuru (Meme)</option>
+          <option value="oswald">Oswald</option>
+          <option value="impact">Impact / Arial Black</option>
+          <option value="sans">Sans</option>
+          <option value="serif">Serif</option>
+          <option value="mono">Mono</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="sizeRange">{{T:size}} · <output id="sizeOut">64</output></label>
+        <input type="range" id="sizeRange" min="12" max="360" value="64">
+      </div>
+      <div class="field two-col">
+        <div>
+          <label for="fillColor">{{T:fill}}</label>
+          <input type="color" id="fillColor" value="#ffffff">
+        </div>
+        <div>
+          <label for="strokeColor">{{T:stroke}}</label>
+          <input type="color" id="strokeColor" value="#000000">
+        </div>
+      </div>
+      <div class="field">
+        <label for="strokeRange">{{T:strokeWidth}} · <output id="strokeOut">8</output></label>
+        <input type="range" id="strokeRange" min="0" max="30" step="0.5" value="8">
+      </div>
+      <div class="field">
+        <label>{{T:align}}</label>
+        <div class="segmented" id="alignGroup" role="group" aria-label="{{T:align}}">
+          <button type="button" data-align="left">{{T:left}}</button>
+          <button type="button" data-align="center" class="active">{{T:center}}</button>
+          <button type="button" data-align="right">{{T:right}}</button>
+        </div>
+      </div>
+      <button type="button" class="btn btn-danger btn-block" id="btnDelete">{{T:delete}}</button>
+    </section>
+  </aside>
+</main>
+
+<section class="how">
+  <h1>{{T:h1}}</h1>
+  <p>{{T:intro}}</p>
+  <ol>
+    <li>{{T:step1}}</li>
+    <li>{{T:step2}}</li>
+    <li>{{T:step3}}</li>
+  </ol>
+</section>
+
+<footer class="footer">
+  <p>{{T:footer}}</p>
+  <p><a href="https://github.com/TonyWoo/meme-generator">GitHub</a> · <a href="https://github.com/georapbox/meme-generator">Upstream</a></p>
+</footer>
+
+<script>window.__TEMPLATES__ = {{TEMPLATES_JSON}}; window.__STR__ = {{STR_JSON}};</script>
+<script type="module" src="../assets/app.js"></script>
+</body>
+</html>

@@ -1,88 +1,44 @@
-# Meme Generator
+# Meme Generator (Modernized Fork)
 
-A Progressive Web App (PWA) for creating memes.
+A free online meme maker, rebuilt for touch: add text layers to any image and **drag them into place**, **resize by dragging the corner handle or pinching with two fingers**. No sign-up, no uploads to a server — everything runs in your browser.
 
-## About
+**Live site:** https://tonywoo.github.io/meme-generator/
 
-This is a web application that allows users to create memes by adding text to images.
-The application is built with web technologies such as HTML, CSS, and JavaScript.
-It uses the [Canvas API](https://developer.mozilla.org/docs/Web/API/Canvas_API) to draw the meme text on the image. 
-Processing the image and text is done client-side, so no data is sent to any server.
-
-## Live demo
-
-👉 [Meme Generator](https://georapbox.github.io/meme-generator/)
+Forked from [georapbox/meme-generator](https://github.com/georapbox/meme-generator) (MIT). This fork keeps the original template library and fonts, and replaces the editor with a layer-based, mobile-first implementation.
 
 ## Features
 
-Some of the key features of the application include creating memes by:
-- Selecting an image from your device
-- Selecting an image from the web (by URL)
-- Selecting an image from the gallery
-- Taking a photo with your device's web camera
-- Using a solid color as background
+- 92 built-in meme templates, plus upload / paste / drag-and-drop your own image, or start from a blank canvas (1:1, 4:5, 16:9, 9:16)
+- Unlimited text layers: drag to move, corner-handle drag or two-finger pinch to resize
+- Font (Pressuru, Oswald, Impact, Sans, Serif, Mono), size, text color, outline color and width, alignment
+- Export as PNG or JPG at the image's full resolution
+- Mobile-first UI with large touch targets; desktop gets a two-column layout
 
-## Screenshots
+## Languages
 
-The following screenshots show the application in action:
+Seven locales, each with its own URL, canonical link and full hreflang set:
 
-![meme](screenshots/screenshot.png)
+- English — `/en/`
+- 简体中文 — `/zh/`
+- Español — `/es/`
+- Português — `/pt/`
+- 日本語 — `/ja/`
+- Deutsch — `/de/`
+- Français — `/fr/`
+
+The root URL redirects to the visitor's browser language.
 
 ## Development
 
-Below are the instructions for setting up the development environment.
-
-### Prerequisites
-
-- **[nvm](https://github.com/nvm-sh/nvm)** (Node Version Manager)
-
-The required Node.js version is managed via **nvm** and defined in the `.nvmrc` file.  
-Once the correct Node version is active, the bundled npm version will be used automatically.
-
-### Installation
-
-Clone the repository to your local machine:
+No dependencies. Node.js 18+ only.
 
 ```sh
-git clone git@github.com:georapbox/meme-generator.git
+npm run build    # generates dist/ (7 locale pages + assets + sitemap)
+npm run preview  # serves dist/ at http://localhost:8907/
 ```
 
-Navigate to the project's directory and install the dependencies:
-
-```sh
-npm install
-```
-
-### Running the application
-
-To run the application in development mode, run the following command:
-
-```sh
-npm start -- --open
-```
-
-This will start the development server and open the application in your default web browser.
-
-### Building the application for production
-
-To build the application for production, run the following command:
-
-```sh
-npm run build
-```
-
-This will create a `dist` directory containing the production build of the application.
-
-### Deployment
-
-To deploy the application, run the following command:
-
-```sh
-npm run deploy
-```
-
-This will build the application first and then deploy it to GitHub Pages in the `gh-pages` branch.
+Layout: `src/` (page template, editor `app.js`, `styles.css`, `i18n.mjs`), `assets/` (templates, fonts), `build.mjs` (static generator). Deployment is the `dist/` folder published to the `gh-pages` branch.
 
 ## License
 
-[The MIT License (MIT)](https://github.com/georapbox/meme-generator/blob/master/LICENSE)
+MIT, see [LICENSE](LICENSE). Fonts: Pressuru and Oswald (OFL), license files in `assets/fonts/`.
