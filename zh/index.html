@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>梗图生成器 – 免费在线制作梗图，可拖动文字位置与大小</title>
+<meta name="description" content="免费在线制作梗图：上传图片或选模板，添加文字后可直接拖动位置、拖角或双指捏合缩放，一键下载 PNG 或 JPG。无需注册，手机上也能顺手操作。">
+<link rel="canonical" href="https://tonywoo.github.io/meme-generator/zh/">
+<link rel="alternate" hreflang="en" href="https://tonywoo.github.io/meme-generator/en/">
+<link rel="alternate" hreflang="zh-CN" href="https://tonywoo.github.io/meme-generator/zh/">
+<link rel="alternate" hreflang="es" href="https://tonywoo.github.io/meme-generator/es/">
+<link rel="alternate" hreflang="pt-BR" href="https://tonywoo.github.io/meme-generator/pt/">
+<link rel="alternate" hreflang="ja" href="https://tonywoo.github.io/meme-generator/ja/">
+<link rel="alternate" hreflang="de" href="https://tonywoo.github.io/meme-generator/de/">
+<link rel="alternate" hreflang="fr" href="https://tonywoo.github.io/meme-generator/fr/">
+<link rel="alternate" hreflang="x-default" href="https://tonywoo.github.io/meme-generator/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Meme Generator">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:title" content="梗图生成器 – 免费在线制作梗图，可拖动文字位置与大小">
+<meta property="og:description" content="免费在线制作梗图：上传图片或选模板，添加文字后可直接拖动位置、拖角或双指捏合缩放，一键下载 PNG 或 JPG。无需注册，手机上也能顺手操作。">
+<meta property="og:url" content="https://tonywoo.github.io/meme-generator/zh/">
+<meta property="og:image" content="https://tonywoo.github.io/meme-generator/assets/templates/this-is-fine.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0f1220">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>😂</text></svg>">
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="./" aria-label="Meme Generator">
+    <span class="brand-emoji" aria-hidden="true">😂</span>
+    <span class="brand-name">Meme Generator</span>
+  </a>
+  <label class="lang-picker">
+    <span class="visually-hidden">Language</span>
+    <select id="langSelect" aria-label="Language">
+      <option value="en">English</option>
+      <option value="zh" selected>简体中文</option>
+      <option value="es">Español</option>
+      <option value="pt">Português</option>
+      <option value="ja">日本語</option>
+      <option value="de">Deutsch</option>
+      <option value="fr">Français</option>
+    </select>
+  </label>
+</header>
+
+<main class="layout">
+  <section class="stage-col">
+    <div class="stage" id="stage">
+      <canvas id="canvas" width="880" height="880"></canvas>
+      <div class="stage-loading" id="stageLoading">…</div>
+    </div>
+    <p class="hint">拖动文字可以移动位置；拖右下角的橙色手柄，或者双指捏合，可以放大缩小。</p>
+    <div class="download-row">
+      <button type="button" class="btn btn-primary" id="btnPng">下载 PNG</button>
+      <button type="button" class="btn" id="btnJpg">下载 JPG</button>
+    </div>
+  </section>
+
+  <aside class="panel">
+    <section class="card">
+      <h2>模板</h2>
+      <div class="source-row">
+        <label class="btn btn-accent file-btn">
+          上传图片
+          <input type="file" id="fileInput" accept="image/*" hidden>
+        </label>
+        <div class="blank-box">
+          <select id="blankSize" aria-label="空白画布">
+            <option value="1080x1080">1:1 · 1080×1080</option>
+            <option value="1080x1350">4:5 · 1080×1350</option>
+            <option value="1920x1080">16:9 · 1920×1080</option>
+            <option value="1080x1920">9:16 · 1080×1920</option>
+          </select>
+          <button type="button" class="btn" id="btnBlank">空白画布</button>
+        </div>
+      </div>
+      <div class="tpl-strip" id="tplStrip" role="listbox" aria-label="模板"></div>
+    </section>
+
+    <section class="card" id="textCard">
+      <h2>文字</h2>
+      <button type="button" class="btn btn-accent btn-block" id="btnAddText">＋ 添加文字</button>
+      <div class="field">
+        <label for="textInput">文字</label>
+        <textarea id="textInput" rows="2"></textarea>
+      </div>
+      <div class="field">
+        <label for="fontSelect">字体</label>
+        <select id="fontSelect">
+          <option value="pressuru">Pressuru (Meme)</option>
+          <option value="oswald">Oswald</option>
+          <option value="impact">Impact / Arial Black</option>
+          <option value="sans">Sans</option>
+          <option value="serif">Serif</option>
+          <option value="mono">Mono</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="sizeRange">字号 · <output id="sizeOut">64</output></label>
+        <input type="range" id="sizeRange" min="12" max="360" value="64">
+      </div>
+      <div class="field two-col">
+        <div>
+          <label for="fillColor">文字颜色</label>
+          <input type="color" id="fillColor" value="#ffffff">
+        </div>
+        <div>
+          <label for="strokeColor">描边颜色</label>
+          <input type="color" id="strokeColor" value="#000000">
+        </div>
+      </div>
+      <div class="field">
+        <label for="strokeRange">描边粗细 · <output id="strokeOut">8</output></label>
+        <input type="range" id="strokeRange" min="0" max="30" step="0.5" value="8">
+      </div>
+      <div class="field">
+        <label>对齐</label>
+        <div class="segmented" id="alignGroup" role="group" aria-label="对齐">
+          <button type="button" data-align="left">左</button>
+          <button type="button" data-align="center" class="active">中</button>
+          <button type="button" data-align="right">右</button>
+        </div>
+      </div>
+      <button type="button" class="btn btn-danger btn-block" id="btnDelete">删除文字</button>
+    </section>
+  </aside>
+</main>
+
+<section class="how">
+  <h1>免费梗图生成器</h1>
+  <p>选一张模板或上传自己的图片，加上文字，拖到想要的位置就能下载。全程在浏览器里完成，图片不会离开你的设备。</p>
+  <ol>
+    <li>选模板，或者上传一张图片</li>
+    <li>添加文字，拖动移动，拖右下角或双指捏合缩放</li>
+    <li>下载 PNG 或 JPG，拿去分享</li>
+  </ol>
+</section>
+
+<footer class="footer">
+  <p>永久免费，无需注册。基于 George Raptis 的开源项目 meme-generator（MIT 协议）改造。</p>
+  <p><a href="https://github.com/TonyWoo/meme-generator">GitHub</a> · <a href="https://github.com/georapbox/meme-generator">Upstream</a></p>
+</footer>
+
+<script>window.__TEMPLATES__ = ["afraid-to-ask-andy.jpg","always-has-been.jpg","anakin-padme.jpg","are-you-sleeping-brain.jpg","austin-powers-doctor-evil.jpg","austin-powers-laughing-villains.jpg","bad-luck-brian.jpg","batman-slapping-robin.jpg","be-honest.jpg","bell-curve.jpg","ben-affleck-smoking.jpg","bernie.jpg","bill-murray-groundhog-day.jpg","captain-picard-facepalm.jpg","car-drift.jpg","change-my-mind.jpg","disappointed-guy.jpg","disaster-girl.jpg","distracted-boyfriend.jpg","drake-hotline-bling.jpg","drowning-kid-in-the-pool.jpg","epic-handshake.jpg","finding-neverland.jpg","gibson-jesus.jpg","girls-gossiping.jpg","godfather.jpg","goose-chase.jpg","grant-gustin-over-grave.jpg","greta-thunberg-how-dare-you.jpg","grinning-girl.jpg","group-therapy.jpg","hack-the-planet.jpg","harakiri.jpg","hide-the-pain-harold.jpg","i-bet-hes-thinking-about-other-women.jpg","i-dont-always.jpg","i-see-dead-people.jpg","i-want-you-uncle-sam.jpg","jack-sparrow-being-chased.jpg","jason-momoa-henry-cavill.jpg","john-wick-consequences.jpg","jurassic-park-no-one-cares.jpg","keep-calm-and-carry-on.jpg","knight-with-arrow-in-helmet.jpg","laughing-leo.jpg","leonardo-dicaprio-cheers.jpg","look-of-superiority.jpg","matrix-morpheus.jpg","milk-girls.jpg","monk-temptation.jpg","monkey_puppet.jpg","mr-bean-waiting.jpg","nerd-south-park.jpg","nervous.jpg","obama-medal.jpg","office-congrats.jpg","one-does-not-simply.jpg","peter-griffin-running-away.jpg","plague-hackers.jpg","sad-guy-happy-guy-bus.jpg","sad-pablo-escobar.jpg","say-that-again-i-dare-you.jpg","scooby-doo-mask-reveal.jpg","shame.jpg","shirley-temple-laugh.png","shut-up-and-take-my-money.jpg","sparta-leonidas.jpg","spiderman-pointing-at-spiderman.jpg","star-wars-yoda.jpg","success-kid.jpg","sweating-bullets.jpg","tabasco-eye-drops.jpg","tell-me-the-truth-I-am-ready-to-hear-it.png","terminator-hasta-la-vista-baby.jpg","the-rock-driving.jpg","theyre-the-same-picture.jpg","think-about-it.jpg","this-is-fine.jpg","three-dragons.jpg","toilet_guy.jpg","trump-interview.jpg","two-buttons.jpg","undertaker.jpg","uno-draw-25-cards.jpg","unsheathing-sword.jpg","waiting-skeleton.jpg","water-tank-leaking-fix.png","whisper-and-goosebumps.jpg","x-x-everywhere.jpg","xkcd-dependency.jpg","you-guys-are-getting-paid.png","zero-days-since-last.jpg"]; window.__STR__ = {"topDefault":"顶部文字","bottomDefault":"底部文字"};</script>
+<script type="module" src="../assets/app.js"></script>
+</body>
+</html>

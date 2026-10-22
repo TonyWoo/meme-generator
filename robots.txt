@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://tonywoo.github.io/meme-generator/sitemap.xml

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Meme Generator – Free Online Meme Maker with Drag & Resize Text</title>
+<meta name="description" content="Create memes online for free. Upload an image or pick a template, add text, drag it anywhere, resize by dragging or pinching, then download your meme as PNG or JPG. No sign-up, works on mobile.">
+<link rel="canonical" href="https://tonywoo.github.io/meme-generator/en/">
+<link rel="alternate" hreflang="en" href="https://tonywoo.github.io/meme-generator/en/">
+<link rel="alternate" hreflang="zh-CN" href="https://tonywoo.github.io/meme-generator/zh/">
+<link rel="alternate" hreflang="es" href="https://tonywoo.github.io/meme-generator/es/">
+<link rel="alternate" hreflang="pt-BR" href="https://tonywoo.github.io/meme-generator/pt/">
+<link rel="alternate" hreflang="ja" href="https://tonywoo.github.io/meme-generator/ja/">
+<link rel="alternate" hreflang="de" href="https://tonywoo.github.io/meme-generator/de/">
+<link rel="alternate" hreflang="fr" href="https://tonywoo.github.io/meme-generator/fr/">
+<link rel="alternate" hreflang="x-default" href="https://tonywoo.github.io/meme-generator/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Meme Generator">
+<meta property="og:locale" content="en_US">
+<meta property="og:title" content="Meme Generator – Free Online Meme Maker with Drag & Resize Text">
+<meta property="og:description" content="Create memes online for free. Upload an image or pick a template, add text, drag it anywhere, resize by dragging or pinching, then download your meme as PNG or JPG. No sign-up, works on mobile.">
+<meta property="og:url" content="https://tonywoo.github.io/meme-generator/en/">
+<meta property="og:image" content="https://tonywoo.github.io/meme-generator/assets/templates/this-is-fine.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0f1220">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>😂</text></svg>">
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="./" aria-label="Meme Generator">
+    <span class="brand-emoji" aria-hidden="true">😂</span>
+    <span class="brand-name">Meme Generator</span>
+  </a>
+  <label class="lang-picker">
+    <span class="visually-hidden">Language</span>
+    <select id="langSelect" aria-label="Language">
+      <option value="en" selected>English</option>
+      <option value="zh">简体中文</option>
+      <option value="es">Español</option>
+      <option value="pt">Português</option>
+      <option value="ja">日本語</option>
+      <option value="de">Deutsch</option>
+      <option value="fr">Français</option>
+    </select>
+  </label>
+</header>
+
+<main class="layout">
+  <section class="stage-col">
+    <div class="stage" id="stage">
+      <canvas id="canvas" width="880" height="880"></canvas>
+      <div class="stage-loading" id="stageLoading">…</div>
+    </div>
+    <p class="hint">Drag text to move it. Drag the orange corner handle, or pinch with two fingers, to resize.</p>
+    <div class="download-row">
+      <button type="button" class="btn btn-primary" id="btnPng">Download PNG</button>
+      <button type="button" class="btn" id="btnJpg">Download JPG</button>
+    </div>
+  </section>
+
+  <aside class="panel">
+    <section class="card">
+      <h2>Templates</h2>
+      <div class="source-row">
+        <label class="btn btn-accent file-btn">
+          Upload image
+          <input type="file" id="fileInput" accept="image/*" hidden>
+        </label>
+        <div class="blank-box">
+          <select id="blankSize" aria-label="Blank canvas">
+            <option value="1080x1080">1:1 · 1080×1080</option>
+            <option value="1080x1350">4:5 · 1080×1350</option>
+            <option value="1920x1080">16:9 · 1920×1080</option>
+            <option value="1080x1920">9:16 · 1080×1920</option>
+          </select>
+          <button type="button" class="btn" id="btnBlank">Blank canvas</button>
+        </div>
+      </div>
+      <div class="tpl-strip" id="tplStrip" role="listbox" aria-label="Templates"></div>
+    </section>
+
+    <section class="card" id="textCard">
+      <h2>Text</h2>
+      <button type="button" class="btn btn-accent btn-block" id="btnAddText">＋ Add text</button>
+      <div class="field">
+        <label for="textInput">Text</label>
+        <textarea id="textInput" rows="2"></textarea>
+      </div>
+      <div class="field">
+        <label for="fontSelect">Font</label>
+        <select id="fontSelect">
+          <option value="pressuru">Pressuru (Meme)</option>
+          <option value="oswald">Oswald</option>
+          <option value="impact">Impact / Arial Black</option>
+          <option value="sans">Sans</option>
+          <option value="serif">Serif</option>
+          <option value="mono">Mono</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="sizeRange">Size · <output id="sizeOut">64</output></label>
+        <input type="range" id="sizeRange" min="12" max="360" value="64">
+      </div>
+      <div class="field two-col">
+        <div>
+          <label for="fillColor">Text color</label>
+          <input type="color" id="fillColor" value="#ffffff">
+        </div>
+        <div>
+          <label for="strokeColor">Outline color</label>
+          <input type="color" id="strokeColor" value="#000000">
+        </div>
+      </div>
+      <div class="field">
+        <label for="strokeRange">Outline width · <output id="strokeOut">8</output></label>
+        <input type="range" id="strokeRange" min="0" max="30" step="0.5" value="8">
+      </div>
+      <div class="field">
+        <label>Align</label>
+        <div class="segmented" id="alignGroup" role="group" aria-label="Align">
+          <button type="button" data-align="left">Left</button>
+          <button type="button" data-align="center" class="active">Center</button>
+          <button type="button" data-align="right">Right</button>
+        </div>
+      </div>
+      <button type="button" class="btn btn-danger btn-block" id="btnDelete">Delete text</button>
+    </section>
+  </aside>
+</main>
+
+<section class="how">
+  <h1>Free Meme Generator</h1>
+  <p>Pick a template or upload your own image, add text, drag it into place and download. Everything runs in your browser, your images never leave your device.</p>
+  <ol>
+    <li>Choose a template or upload an image</li>
+    <li>Add text, drag to move, drag the corner or pinch to resize</li>
+    <li>Download your meme as PNG or JPG and share it</li>
+  </ol>
+</section>
+
+<footer class="footer">
+  <p>Free forever, no sign-up. Based on the open-source meme-generator by George Raptis (MIT License).</p>
+  <p><a href="https://github.com/TonyWoo/meme-generator">GitHub</a> · <a href="https://github.com/georapbox/meme-generator">Upstream</a></p>
+</footer>
+
+<script>window.__TEMPLATES__ = ["afraid-to-ask-andy.jpg","always-has-been.jpg","anakin-padme.jpg","are-you-sleeping-brain.jpg","austin-powers-doctor-evil.jpg","austin-powers-laughing-villains.jpg","bad-luck-brian.jpg","batman-slapping-robin.jpg","be-honest.jpg","bell-curve.jpg","ben-affleck-smoking.jpg","bernie.jpg","bill-murray-groundhog-day.jpg","captain-picard-facepalm.jpg","car-drift.jpg","change-my-mind.jpg","disappointed-guy.jpg","disaster-girl.jpg","distracted-boyfriend.jpg","drake-hotline-bling.jpg","drowning-kid-in-the-pool.jpg","epic-handshake.jpg","finding-neverland.jpg","gibson-jesus.jpg","girls-gossiping.jpg","godfather.jpg","goose-chase.jpg","grant-gustin-over-grave.jpg","greta-thunberg-how-dare-you.jpg","grinning-girl.jpg","group-therapy.jpg","hack-the-planet.jpg","harakiri.jpg","hide-the-pain-harold.jpg","i-bet-hes-thinking-about-other-women.jpg","i-dont-always.jpg","i-see-dead-people.jpg","i-want-you-uncle-sam.jpg","jack-sparrow-being-chased.jpg","jason-momoa-henry-cavill.jpg","john-wick-consequences.jpg","jurassic-park-no-one-cares.jpg","keep-calm-and-carry-on.jpg","knight-with-arrow-in-helmet.jpg","laughing-leo.jpg","leonardo-dicaprio-cheers.jpg","look-of-superiority.jpg","matrix-morpheus.jpg","milk-girls.jpg","monk-temptation.jpg","monkey_puppet.jpg","mr-bean-waiting.jpg","nerd-south-park.jpg","nervous.jpg","obama-medal.jpg","office-congrats.jpg","one-does-not-simply.jpg","peter-griffin-running-away.jpg","plague-hackers.jpg","sad-guy-happy-guy-bus.jpg","sad-pablo-escobar.jpg","say-that-again-i-dare-you.jpg","scooby-doo-mask-reveal.jpg","shame.jpg","shirley-temple-laugh.png","shut-up-and-take-my-money.jpg","sparta-leonidas.jpg","spiderman-pointing-at-spiderman.jpg","star-wars-yoda.jpg","success-kid.jpg","sweating-bullets.jpg","tabasco-eye-drops.jpg","tell-me-the-truth-I-am-ready-to-hear-it.png","terminator-hasta-la-vista-baby.jpg","the-rock-driving.jpg","theyre-the-same-picture.jpg","think-about-it.jpg","this-is-fine.jpg","three-dragons.jpg","toilet_guy.jpg","trump-interview.jpg","two-buttons.jpg","undertaker.jpg","uno-draw-25-cards.jpg","unsheathing-sword.jpg","waiting-skeleton.jpg","water-tank-leaking-fix.png","whisper-and-goosebumps.jpg","x-x-everywhere.jpg","xkcd-dependency.jpg","you-guys-are-getting-paid.png","zero-days-since-last.jpg"]; window.__STR__ = {"topDefault":"TOP TEXT","bottomDefault":"BOTTOM TEXT"};</script>
+<script type="module" src="../assets/app.js"></script>
+</body>
+</html>
