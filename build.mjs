@@ -21,6 +21,7 @@ cpSync(join(ROOT, 'src/app.js'), join(DIST, 'assets/app.js'));
 cpSync(join(ROOT, 'src/styles.css'), join(DIST, 'assets/styles.css'));
 cpSync(join(ROOT, 'assets/templates'), join(DIST, 'assets/templates'), { recursive: true });
 cpSync(join(ROOT, 'assets/fonts'), join(DIST, 'assets/fonts'), { recursive: true });
+try { cpSync(join(ROOT, 'assets/og-cover.jpg'), join(DIST, 'assets/og-cover.jpg')); } catch {}
 
 const templates = readdirSync(join(ROOT, 'assets/templates')).sort();
 
@@ -34,6 +35,11 @@ function hreflangLinks(currentSlug) {
   return lines.join('\n');
 }
 
+function ogLocaleAlternates(currentSlug) {
+  return LOCALES.filter((l) => l.slug !== currentSlug).map(
+    (l) => `<meta property="og:locale:alternate" content="${l.ogLocale}">`
+  ).join('\n');
+}
 function langOptions(currentSlug) {
   return LOCALES.map(
     (l) => `      <option value="${l.slug}"${l.slug === currentSlug ? ' selected' : ''}>${l.label}</option>`
@@ -49,10 +55,12 @@ for (const loc of LOCALES) {
   html = html.replaceAll('{{CANONICAL}}', `${BASE_URL}${loc.slug}/`);
   html = html.replaceAll('{{HREFLANG_LINKS}}', hreflangLinks(loc.slug));
   html = html.replaceAll('{{OG_LOCALE}}', loc.ogLocale);
+  html = html.replaceAll('{{OG_LOCALE_ALTERNATES}}', ogLocaleAlternates(loc.slug));
+  html = html.replaceAll('{{OG_ALT}}', t.ogAlt || t.metaTitle);
   html = html.replaceAll('{{BASE_URL}}', BASE_URL);
   html = html.replaceAll('{{LANG_OPTIONS}}', langOptions(loc.slug));
   html = html.replaceAll('{{TEMPLATES_JSON}}', JSON.stringify(templates));
-  html = html.replaceAll('{{STR_JSON}}', JSON.stringify({ topDefault: t.topDefault, bottomDefault: t.bottomDefault }));
+  html = html.replaceAll('{{STR_JSON}}', JSON.stringify({ topDefault: t.topDefault, bottomDefault: t.bottomDefault, copied: t.copied, share: t.share }));
   html = html.replace(/\{\{T:(\w+)\}\}/g, (_, key) => {
     if (!(key in t)) throw new Error(`missing i18n key ${key} for ${loc.slug}`);
     return t[key];
@@ -70,8 +78,21 @@ const rootHtml = `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Meme Generator</title>
+<title>${T.en.metaTitle}</title>
+<meta name="description" content="${T.en.metaDescription}">
 <link rel="canonical" href="${BASE_URL}en/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="${T.en.metaTitle}">
+<meta property="og:description" content="${T.en.metaDescription}">
+<meta property="og:url" content="${BASE_URL}">
+<meta property="og:image" content="${BASE_URL}assets/og-cover.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="${T.en.ogAlt}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="${T.en.metaTitle}">
+<meta name="twitter:description" content="${T.en.metaDescription}">
+<meta name="twitter:image" content="${BASE_URL}assets/og-cover.jpg">
 <meta name="robots" content="noindex, follow">
 <script>
   var known = ${JSON.stringify(slugs)};

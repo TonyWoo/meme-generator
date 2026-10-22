@@ -10,7 +10,12 @@ Forked from [georapbox/meme-generator](https://github.com/georapbox/meme-generat
 
 - 92 built-in meme templates, plus upload / paste / drag-and-drop your own image, or start from a blank canvas (1:1, 4:5, 16:9, 9:16)
 - Unlimited text layers: drag to move, corner-handle drag or two-finger pinch to resize
+- Rotate text: drag the top handle, use the slider, or tap the ±15° buttons
+- Click the red × on the image to delete a layer directly; double-click (or double-tap) a layer to edit it in place on the image
+- Quick colors: preset swatches and a color picker in the floating bar under the image and in the panel, applied instantly
 - Font (Pressuru, Oswald, Impact, Sans, Serif, Mono), size, text color, outline color and width, alignment
+- Switching language keeps your current edit (layers, colors, rotation and image are restored)
+- Share with complete Open Graph / Twitter cards and a dedicated 1200×630 share image; the Share button uses the Web Share API when available
 - Export as PNG or JPG at the image's full resolution
 - Mobile-first UI with large touch targets; desktop gets a two-column layout
 

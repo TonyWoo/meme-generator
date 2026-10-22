@@ -5,17 +5,31 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>{{META_TITLE}}</title>
 <meta name="description" content="{{META_DESC}}">
+<meta name="keywords" content="meme generator, meme maker, make meme online, meme editor">
+<meta name="author" content="Tony Wu">
+<meta name="robots" content="index, follow">
 <link rel="canonical" href="{{CANONICAL}}">
 {{HREFLANG_LINKS}}
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Meme Generator">
 <meta property="og:locale" content="{{OG_LOCALE}}">
+{{OG_LOCALE_ALTERNATES}}
 <meta property="og:title" content="{{META_TITLE}}">
 <meta property="og:description" content="{{META_DESC}}">
 <meta property="og:url" content="{{CANONICAL}}">
-<meta property="og:image" content="{{BASE_URL}}assets/templates/this-is-fine.jpg">
+<meta property="og:image" content="{{BASE_URL}}assets/og-cover.jpg">
+<meta property="og:image:secure_url" content="{{BASE_URL}}assets/og-cover.jpg">
+<meta property="og:image:type" content="image/jpeg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="{{OG_ALT}}">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{{META_TITLE}}">
+<meta name="twitter:description" content="{{META_DESC}}">
+<meta name="twitter:image" content="{{BASE_URL}}assets/og-cover.jpg">
+<meta name="twitter:image:alt" content="{{OG_ALT}}">
 <meta name="theme-color" content="#0f1220">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Meme Generator","applicationCategory":"MultimediaApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"{{META_DESC}}","url":"{{CANONICAL}}","image":"{{BASE_URL}}assets/og-cover.jpg","inLanguage":"{{LANG_ATTR}}"}</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>😂</text></svg>">
 <link rel="stylesheet" href="../assets/styles.css">
 </head>
@@ -38,12 +52,33 @@
     <div class="stage" id="stage">
       <canvas id="canvas" width="880" height="880"></canvas>
       <div class="stage-loading" id="stageLoading">…</div>
+      <textarea id="inlineEditor" class="inline-editor" hidden rows="2" aria-label="{{T:text}}"></textarea>
     </div>
+      <div class="quick-bar" id="quickBar" hidden>
+        <div class="quick-group" aria-label="{{T:fill}}">
+          <span class="quick-label">{{T:fill}}</span>
+          <div class="swatches" id="fillSwatches"></div>
+          <input type="color" id="quickFillColor" value="#ffffff" aria-label="{{T:fill}}">
+        </div>
+        <div class="quick-group" aria-label="{{T:stroke}}">
+          <span class="quick-label">{{T:stroke}}</span>
+          <div class="swatches" id="strokeSwatches"></div>
+          <input type="color" id="quickStrokeColor" value="#000000" aria-label="{{T:stroke}}">
+        </div>
+        <div class="quick-actions">
+          <button type="button" id="btnRotateLeft" title="-15°" aria-label="Rotate left">↺</button>
+          <button type="button" id="btnRotateRight" title="+15°" aria-label="Rotate right">↻</button>
+          <button type="button" id="btnQuickEdit" title="Edit">✎</button>
+          <button type="button" id="btnQuickDelete" class="danger" title="{{T:delete}}" aria-label="{{T:delete}}">×</button>
+        </div>
+      </div>
     <p class="hint">{{T:hint}}</p>
     <div class="download-row">
       <button type="button" class="btn btn-primary" id="btnPng">{{T:downloadPng}}</button>
       <button type="button" class="btn" id="btnJpg">{{T:downloadJpg}}</button>
+      <button type="button" class="btn" id="btnShare">{{T:share}}</button>
     </div>
+    <p class="share-note" id="shareNote" role="status" aria-live="polite"></p>
   </section>
 
   <aside class="panel">
@@ -89,14 +124,25 @@
         <label for="sizeRange">{{T:size}} · <output id="sizeOut">64</output></label>
         <input type="range" id="sizeRange" min="12" max="360" value="64">
       </div>
+      <div class="field">
+        <label for="rotateRange">{{T:rotate}} · <output id="rotateOut">0°</output></label>
+        <input type="range" id="rotateRange" min="-180" max="180" step="1" value="0">
+        <div class="rotate-row">
+          <button type="button" class="btn btn-small" id="btnRotateLeft2">↺ -15°</button>
+          <button type="button" class="btn btn-small" id="btnRotateReset">0°</button>
+          <button type="button" class="btn btn-small" id="btnRotateRight2">↻ +15°</button>
+        </div>
+      </div>
       <div class="field two-col">
         <div>
           <label for="fillColor">{{T:fill}}</label>
           <input type="color" id="fillColor" value="#ffffff">
+          <div class="swatches panel-swatches" id="fillSwatchesPanel"></div>
         </div>
         <div>
           <label for="strokeColor">{{T:stroke}}</label>
           <input type="color" id="strokeColor" value="#000000">
+          <div class="swatches panel-swatches" id="strokeSwatchesPanel"></div>
         </div>
       </div>
       <div class="field">
@@ -111,7 +157,10 @@
           <button type="button" data-align="right">{{T:right}}</button>
         </div>
       </div>
-      <button type="button" class="btn btn-danger btn-block" id="btnDelete">{{T:delete}}</button>
+      <div class="dual-row">
+        <button type="button" class="btn btn-block" id="btnDuplicate">{{T:duplicate}}</button>
+        <button type="button" class="btn btn-danger btn-block" id="btnDelete">{{T:delete}}</button>
+      </div>
     </section>
   </aside>
 </main>
