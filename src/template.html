@@ -31,7 +31,7 @@
 <meta name="theme-color" content="#0f1220">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebApplication","name":"Meme Generator","applicationCategory":"MultimediaApplication","operatingSystem":"Any","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"{{META_DESC}}","url":"{{CANONICAL}}","image":"{{BASE_URL}}assets/og-cover.jpg","inLanguage":"{{LANG_ATTR}}"}</script>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>😂</text></svg>">
-<link rel="stylesheet" href="../assets/styles.css">
+<link rel="stylesheet" href="../assets/styles.css?v={{ASSET_VER}}">
 </head>
 <body>
 <header class="topbar">
@@ -150,6 +150,10 @@
         <input type="range" id="strokeRange" min="0" max="30" step="0.5" value="8">
       </div>
       <div class="field">
+        <label for="opacityRange">{{T:opacity}} · <output id="opacityOut">100%</output></label>
+        <input type="range" id="opacityRange" min="0" max="100" step="1" value="100">
+      </div>
+      <div class="field">
         <label>{{T:align}}</label>
         <div class="segmented" id="alignGroup" role="group" aria-label="{{T:align}}">
           <button type="button" data-align="left">{{T:left}}</button>
@@ -181,6 +185,6 @@
 </footer>
 
 <script>window.__TEMPLATES__ = {{TEMPLATES_JSON}}; window.__STR__ = {{STR_JSON}};</script>
-<script type="module" src="../assets/app.js"></script>
+<script type="module" src="../assets/app.js?v={{ASSET_VER}}"></script>
 </body>
 </html>

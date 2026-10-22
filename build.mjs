@@ -4,6 +4,7 @@
 //   dist/<lang>/index.html one static page per locale, own canonical + hreflang set
 //   dist/assets/           app.js, styles.css, templates/, fonts/
 import { readFileSync, writeFileSync, mkdirSync, cpSync, readdirSync, rmSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { LOCALES, T } from './src/i18n.mjs';
@@ -26,6 +27,10 @@ try { cpSync(join(ROOT, 'assets/og-cover.jpg'), join(DIST, 'assets/og-cover.jpg'
 const templates = readdirSync(join(ROOT, 'assets/templates')).sort();
 
 const templateHtml = readFileSync(join(ROOT, 'src/template.html'), 'utf8');
+const ASSET_VER = createHash('sha256')
+  .update(readFileSync(join(ROOT, 'src/app.js')))
+  .update(readFileSync(join(ROOT, 'src/styles.css')))
+  .digest('hex').slice(0, 10);
 
 function hreflangLinks(currentSlug) {
   const lines = LOCALES.map(
@@ -55,6 +60,7 @@ for (const loc of LOCALES) {
   html = html.replaceAll('{{CANONICAL}}', `${BASE_URL}${loc.slug}/`);
   html = html.replaceAll('{{HREFLANG_LINKS}}', hreflangLinks(loc.slug));
   html = html.replaceAll('{{OG_LOCALE}}', loc.ogLocale);
+  html = html.replaceAll('{{ASSET_VER}}', ASSET_VER);
   html = html.replaceAll('{{OG_LOCALE_ALTERNATES}}', ogLocaleAlternates(loc.slug));
   html = html.replaceAll('{{OG_ALT}}', t.ogAlt || t.metaTitle);
   html = html.replaceAll('{{BASE_URL}}', BASE_URL);

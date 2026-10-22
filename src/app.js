@@ -21,6 +21,7 @@ const FONT_STACKS = {
 };
 const PRESET_COLORS = ['#ffffff','#000000','#ffd400','#ff3b30','#ff8a3d','#34c759','#5b8cff','#bf5af2','#ff5b8f','#00c7be'];
 const STATE_KEY = 'meme-editor-state-v2';
+const RESTORE_FLAG = 'meme-editor-restore-once';
 const BASE_DATA_KEY = 'meme-editor-base-data-v2';
 
 const canvas = document.getElementById('canvas');
@@ -42,6 +43,7 @@ const els = {
   rotate: $('rotateRange'), rotateOut: $('rotateOut'),
   fill: $('fillColor'), stroke: $('strokeColor'),
   strokeW: $('strokeRange'), strokeOut: $('strokeOut'),
+  opacity: $('opacityRange'), opacityOut: $('opacityOut'),
   align: $('alignGroup'),
   quickBar: $('quickBar'), quickFill: $('quickFillColor'), quickStroke: $('quickStrokeColor'),
   inline: $('inlineEditor'), shareNote: $('shareNote'),
@@ -85,6 +87,10 @@ function saveBaseData(dataUrl) {
 }
 function readSavedState() {
   try {
+    // Only a language switch restores the edit, and only once:
+    // a plain refresh starts fresh.
+    if (sessionStorage.getItem(RESTORE_FLAG) !== '1') return null;
+    sessionStorage.removeItem(RESTORE_FLAG);
     const raw = sessionStorage.getItem(STATE_KEY);
     if (!raw) return null;
     const data = JSON.parse(raw);
@@ -108,6 +114,7 @@ function addLayer(text, xRatio, yRatio, fontSize, extra = {}) {
     strokeWidth: Math.round((fontSize || canvas.width * 0.075) * 0.12),
     align: 'center',
     rotation: 0,
+    opacity: 1,
     ...extra,
   };
   layers.push(layer);
@@ -175,6 +182,7 @@ function drawLayer(layer) {
   const { w, lineH } = layerBox(layer);
   const lines = linesOf(layer);
   ctx.save();
+  ctx.globalAlpha = layer.opacity == null ? 1 : layer.opacity;
   ctx.translate(layer.x, layer.y);
   ctx.rotate(rad(layer.rotation || 0));
   ctx.font = `700 ${layer.fontSize}px ${FONT_STACKS[layer.font] || FONT_STACKS.pressuru}`;
@@ -398,7 +406,7 @@ buildSwatches($('strokeSwatchesPanel'), 'stroke');
 function syncPanel() {
   const l = selected();
   const disabled = !l;
-  for (const el of [els.text, els.font, els.size, els.rotate, els.fill, els.stroke, els.strokeW, els.quickFill, els.quickStroke]) if (el) el.disabled = disabled;
+  for (const el of [els.text, els.font, els.size, els.rotate, els.fill, els.stroke, els.strokeW, els.opacity, els.quickFill, els.quickStroke]) if (el) el.disabled = disabled;
   $('btnDelete').disabled = disabled;
   $('btnDuplicate').disabled = disabled;
   if (els.quickBar) els.quickBar.hidden = disabled;
@@ -411,6 +419,8 @@ function syncPanel() {
   if (els.quickFill) els.quickFill.value = l.fill;
   if (els.quickStroke) els.quickStroke.value = l.stroke;
   els.strokeW.value = l.strokeWidth; els.strokeOut.textContent = l.strokeWidth;
+  const op = Math.round((l.opacity == null ? 1 : l.opacity) * 100);
+  els.opacity.value = op; els.opacityOut.textContent = `${op}%`;
   els.align.querySelectorAll('button').forEach((b) => b.classList.toggle('active', b.dataset.align === l.align));
   document.querySelectorAll('#fillSwatches button, #fillSwatchesPanel button').forEach((b) => b.classList.toggle('active', b.dataset.color.toLowerCase() === l.fill.toLowerCase()));
   document.querySelectorAll('#strokeSwatches button, #strokeSwatchesPanel button').forEach((b) => b.classList.toggle('active', b.dataset.color.toLowerCase() === l.stroke.toLowerCase()));
@@ -424,6 +434,7 @@ els.stroke.addEventListener('input', () => { const l = selected(); if (l) { l.st
 if (els.quickFill) els.quickFill.addEventListener('input', () => { const l = selected(); if (l) { l.fill = els.quickFill.value; syncPanel(); render(); } });
 if (els.quickStroke) els.quickStroke.addEventListener('input', () => { const l = selected(); if (l) { l.stroke = els.quickStroke.value; syncPanel(); render(); } });
 els.strokeW.addEventListener('input', () => { const l = selected(); if (l) { l.strokeWidth = +els.strokeW.value; els.strokeOut.textContent = l.strokeWidth; render(); } });
+els.opacity.addEventListener('input', () => { const l = selected(); if (l) { l.opacity = +els.opacity.value / 100; els.opacityOut.textContent = `${els.opacity.value}%`; render(); } });
 els.align.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => {
   const l = selected(); if (!l) return;
   l.align = b.dataset.align; syncPanel(); render();
@@ -445,7 +456,7 @@ $('btnDelete').addEventListener('click', deleteSelected);
 $('btnDuplicate').addEventListener('click', () => {
   const l = selected(); if (!l) return;
   const copy = addLayer(l.text, clamp((l.x + 24) / canvas.width, 0, 1), clamp((l.y + 24) / canvas.height, 0, 1), l.fontSize,
-    { font: l.font, fill: l.fill, stroke: l.stroke, strokeWidth: l.strokeWidth, align: l.align, rotation: l.rotation || 0 });
+    { font: l.font, fill: l.fill, stroke: l.stroke, strokeWidth: l.strokeWidth, align: l.align, rotation: l.rotation || 0, opacity: l.opacity == null ? 1 : l.opacity });
   return copy;
 });
 window.addEventListener('keydown', (e) => {
@@ -544,6 +555,7 @@ $('btnShare').addEventListener('click', async () => {
 // ---------- language switcher: preserve current edit ----------
 $('langSelect').addEventListener('change', (e) => {
   hideInline(true);
+  try { sessionStorage.setItem(RESTORE_FLAG, '1'); } catch {}
   saveState(true);
   const slug = e.target.value;
   window.location.href = `../${slug}/`;
@@ -566,6 +578,7 @@ function applyRestore(data) {
     strokeWidth: Math.round(canvas.width * (s.strokeWidth ?? 0.01)),
     align: s.align || 'center',
     rotation: s.rotation || 0,
+    opacity: s.opacity == null ? 1 : s.opacity,
   }));
   uidSeq = layers.length;
   const selIdx = (data.layers || []).findIndex((s) => s.id === data.selectedId);
