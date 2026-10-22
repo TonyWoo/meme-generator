@@ -469,14 +469,32 @@ window.addEventListener('keydown', (e) => {
 function markActiveThumb(name) {
   els.tplStrip.querySelectorAll('button').forEach((b) => b.classList.toggle('active', b.dataset.name === name));
 }
+const thumbObserver = ('IntersectionObserver' in window)
+  ? new IntersectionObserver((entries) => {
+      for (const en of entries) {
+        if (en.isIntersecting) {
+          const img = en.target;
+          if (img.dataset.src) { img.src = img.dataset.src; delete img.dataset.src; }
+          thumbObserver.unobserve(img);
+        }
+      }
+    }, { root: els.tplStrip, rootMargin: '240px' })
+  : { observe(img) { if (img.dataset.src) { img.src = img.dataset.src; delete img.dataset.src; } }, unobserve() {}, disconnect() {} };
 for (const name of TEMPLATES) {
   const btn = document.createElement('button');
   btn.type = 'button'; btn.dataset.name = name; btn.setAttribute('role', 'option');
   const imgEl = document.createElement('img');
-  imgEl.src = `../assets/templates/${name}`;
-  imgEl.alt = name.replace(/\.[^.]+$/, '').replace(/-/g, ' ');
+  // Lazy thumbnails: the strip loads 240px thumbs (not the full-size
+  // templates), and only when scrolled near. The full template image is
+  // fetched only when the template is actually picked.
+  const stem = name.replace(/\.[^.]+$/, '');
+  imgEl.dataset.src = `../assets/thumbs/${stem}.jpg`;
+  imgEl.alt = stem.replace(/[-_]/g, ' ');
   imgEl.loading = 'lazy';
+  imgEl.decoding = 'async';
+  imgEl.width = 240; imgEl.height = 240;
   btn.appendChild(imgEl);
+  thumbObserver.observe(imgEl);
   btn.addEventListener('click', () => {
     saveBaseData(null);
     loadImageSource(`../assets/templates/${name}`, { type: 'template', name });
