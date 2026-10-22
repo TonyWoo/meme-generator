@@ -21,6 +21,7 @@ mkdirSync(join(DIST, 'assets'), { recursive: true });
 cpSync(join(ROOT, 'src/app.js'), join(DIST, 'assets/app.js'));
 cpSync(join(ROOT, 'src/styles.css'), join(DIST, 'assets/styles.css'));
 cpSync(join(ROOT, 'assets/templates'), join(DIST, 'assets/templates'), { recursive: true });
+try { cpSync(join(ROOT, 'assets/thumbs'), join(DIST, 'assets/thumbs'), { recursive: true }); } catch {}
 cpSync(join(ROOT, 'assets/fonts'), join(DIST, 'assets/fonts'), { recursive: true });
 try { cpSync(join(ROOT, 'assets/og-cover.jpg'), join(DIST, 'assets/og-cover.jpg')); } catch {}
 
