@@ -2,7 +2,16 @@
 
 A free online meme maker, rebuilt for touch: add text layers to any image and **drag them into place**, **resize by dragging the corner handle or pinching with two fingers**. No sign-up, no uploads to a server — everything runs in your browser.
 
-**Live site:** https://tonywoo.github.io/meme-generator/
+## Try it live
+
+**https://tonywoo.github.io/meme-generator/** — pick your language:
+[English](https://tonywoo.github.io/meme-generator/en/) ·
+[简体中文](https://tonywoo.github.io/meme-generator/zh/) ·
+[Español](https://tonywoo.github.io/meme-generator/es/) ·
+[Português](https://tonywoo.github.io/meme-generator/pt/) ·
+[日本語](https://tonywoo.github.io/meme-generator/ja/) ·
+[Deutsch](https://tonywoo.github.io/meme-generator/de/) ·
+[Français](https://tonywoo.github.io/meme-generator/fr/)
 
 Forked from [georapbox/meme-generator](https://github.com/georapbox/meme-generator) (MIT). This fork keeps the original template library and fonts, and replaces the editor with a layer-based, mobile-first implementation.
 
@@ -17,6 +26,7 @@ Forked from [georapbox/meme-generator](https://github.com/georapbox/meme-generat
 - Text opacity slider (0-100%), applied to fill and outline and included in exports
 - Switching language keeps your current edit (layers, colors, rotation, opacity and image are restored once); a plain refresh starts fresh. JS/CSS asset URLs carry a content hash, so new deploys are never stuck behind a stale browser cache
 - Share with complete Open Graph / Twitter cards and a dedicated 1200×630 share image; the Share button uses the Web Share API when available
+- Lazy template thumbnails: the template strip loads 240px thumbnails (~9 KB each) only when scrolled into view; a full-size template is fetched only when you pick it (regenerate thumbs with `python3 make-thumbs.py`)
 - Export as PNG or JPG at the image's full resolution
 - Mobile-first UI with large touch targets; desktop gets a two-column layout
 
@@ -24,13 +34,13 @@ Forked from [georapbox/meme-generator](https://github.com/georapbox/meme-generat
 
 Seven locales, each with its own URL, canonical link and full hreflang set:
 
-- English — `/en/`
-- 简体中文 — `/zh/`
-- Español — `/es/`
-- Português — `/pt/`
-- 日本語 — `/ja/`
-- Deutsch — `/de/`
-- Français — `/fr/`
+- English — https://tonywoo.github.io/meme-generator/en/
+- 简体中文 — https://tonywoo.github.io/meme-generator/zh/
+- Español — https://tonywoo.github.io/meme-generator/es/
+- Português — https://tonywoo.github.io/meme-generator/pt/
+- 日本語 — https://tonywoo.github.io/meme-generator/ja/
+- Deutsch — https://tonywoo.github.io/meme-generator/de/
+- Français — https://tonywoo.github.io/meme-generator/fr/
 
 The root URL redirects to the visitor's browser language.
 
